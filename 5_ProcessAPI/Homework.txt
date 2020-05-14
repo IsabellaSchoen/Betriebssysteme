@@ -1,0 +1,143 @@
+Homework - Process API
+
+1.
+Write a program that calls fork(). Before calling fork(), have the main process access a variable (e.g., x)
+and set its value to something (e.g., 100). What value is the variable in the child process? 
+What happens to the variable when both the child and parent change the value of x?
+------------------
+fork1.c
+------------------
+int x = 100; - all
+x = 20; - child
+x = 405; - parent
+------------------
+I am the parent (pid: 1963) with the value x: 100 
+I am the parent (pid: 1963) with the new value x: 405 
+I am the child (pid: 1964) with the value x: 100 
+I am the child (pid: 1964) with the new value x: 20 
+final value 20
+------------------
+Child and parent take over the old and the new value. And they don't change their PID.
+The final value is 20 because the child runs at the end, so this is the last Zuordnung.
+
+
+
+2.
+Write a program that opens a ﬁle (with the open() system call) and then calls fork() to create a new process. 
+Can both the child and parent access the ﬁle descriptor returned by open()? What happens when they are writing 
+to the ﬁle concurrently, i.e., at the same time?
+------------------
+open1.c; textfile1.txt
+------------------
+write()
+#include <unistd.h>
+ssize_t write(int fd, const void *buf, size_t count);
+writes up to count bytes from the buffer pointed buf to the file referred to by the file descriptor fd. 
+1. The file code (file descriptor or fd).
+2. The pointer to a buffer where the data is stored (buf). //char type
+3. The number of bytes to write from the buffer (nbytes). //strlen(buf)
+------------------
+We wrote from the open1.c into textfile1.txt -> result is seen in "textfile1"
+Because we created a texfile that is totaly empty or has maybe something written in it. But we take everything
+from our programm and redirected to textfile so that everything is overwriten.
+
+
+
+
+3.
+Write another program using fork(). The child process should print“hello”; the parent process should print “goodbye”.
+You should try to ensure that the child process always prints ﬁrst; can you do this without calling wait() in the parent?
+------------------
+fork2.c
+------------------
+sleep() is another option to wait()
+makes the calling thread sleep until seconds seconds have elapsed or a signal arrives which is not ignored. 
+delay for a specified amount of time
+
+
+
+
+4.
+Write a program that calls fork() and then calls some form of exec() to run the program /bin/ls. 
+See if you can try all of the variants of exec(), including (on Linux) execl(), execle(), execlp(), 
+execv(), execvp(), and execvpe(). Why do you think there are so many variants of the same basic call?
+-----------------
+exec1.c
+-----------------
+I don't really understand this exercise....
+
+
+
+
+5.
+Now write a program that uses wait() to wait for the child process to ﬁnish in the parent. 
+What does wait() return? What happens if you use wait() in the child?
+-----------------
+wait1.c
+-----------------
+wait() during parent
+Hi I am Child with (pid:2287)
+Hi I am Parent and always wait for child (rc_wait:2287)
+-----------------
+wait() during child
+Hi I am Parent with (pid:2302) 
+Hi I am Child and always wait for parent (rc_wait:-1)
+-> "-1": meaning wait for any child process. 
+-----------------
+wait()
+blocks the calling process until one of its child processes exits or a signal is received.
+After child process terminates, parent continues its execution after wait system call instruction.
+
+
+
+
+6.
+Write a slight modiﬁcation of the previous program, this time using waitpid() instead of wait().
+When would waitpid() be useful?
+------------------
+waitpid1.c
+------------------
+waitpid()
+#include <sys/wait.h>
+The wait() and waitpid() functions shall obtain status information pertaining to one of the caller's child processes. 
+pid_t waitpid(pid_t pid, int *status, int options); 
+
+The value of pid can be:
+* < -1: Wait for any child process whose process group ID is equal to the absolute value of pid.
+* -1: Wait for any child process.
+* 0: Wait for any child process whose process group ID is equal to that of the calling process.
+* > 0: Wait for the child whose process ID is equal to the value of pid.
+------------------
+waitpid() during parent
+Hi I am Child with (pid:2315)
+Hi I am Parent and always wait for child (rc_waitpid:2315)
+------------------
+waitpid() during child
+Hi I am Parent with (pid:2323)
+Hi I am Child and always wait for parent (rc_waitpid:-1)
+
+
+
+
+7.
+Write a program that creates a child process, and then in the child closes standard output (STDOUT FILENO).
+What happens if the child calls printf() to print some output after closing the descriptor?
+-------------------
+stdout1.c
+-------------------
+close(STDOUT_FILENO)
+stdout belongs to standard I/O stream of C language; whose type is FILE* and defined in stdio.h
+an integer file descriptor (actually, the integer 1). You might use it for write syscall.
+-> closes the Output
+-------------------
+Hi I am Parent with (pid:2341)
+
+
+
+
+
+
+
+
+
+
