@@ -1,0 +1,393 @@
+Homeworks - Semaphores
+
+
+
+1.
+The first problem is just to implement and test a solution to the fork/join problem, 
+as described in the text. Even though this solution is described in the text, 
+the act of typing it in on your own is worth while; even Bach would rewrite Vivaldi, 
+allowing one soon-to-be master to learn from an existing one. 
+See fork-join.c for details. Add the call sleep(1)to the child to ensure it is working.
+------------------------------------------------
+#include <stdio.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <semaphore.h> //neu
+#include "common_threads.h"
+
+sem_t s; 
+
+void *child(void *arg) {
+    printf("child\n");
+    sleep(1);
+    sem_post(&s)// use semaphore here
+    return NULL;
+}
+
+int main(int argc, char *argv[]) {
+    pthread_t p;
+    printf("parent: begin\n");
+    sem_init(&s, 0, 0); // init semaphore here
+    Pthread_create(&p, NULL, child, NULL);
+    sem_wait(&s); // use semaphore here
+    printf("parent: end\n");
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+2.
+Let’s now generalize this a bit by investigating the rendez-vous problem.
+The problem is as follows: you have two threads, each of which are about 
+to enter the rendezvous point in the code. 
+Neither should exit this part of the code before the other enters it. 
+Consider using two semaphores for this task, and see rendezvous.c for details.
+-----------------------------------------------
+#include <stdio.h>
+#include <unistd.h>
+#include <semaphore.h> //
+#include "common_threads.h"
+
+
+// If done correctly, each child should print their "before" message
+// before either prints their "after" message. Test by adding sleep(1)
+// calls in various locations.
+
+
+sem_t s1, s2;
+
+
+void *child_1(void *arg) {
+    printf("child 1: before\n");
+    sem_post(&s2); // what goes here?
+    printf("child 1: after\n");
+    sem_post(&s1); //neu
+    return NULL;
+}
+
+
+void *child_2(void *arg) {
+    printf("child 2: before\n");
+    sem_wait(&s1); // what goes here?
+    printf("child 2: after\n");
+    sem_wait(&s2) //neu
+    return NULL;
+}
+
+
+
+int main(int argc, char *argv[]) {
+    pthread_t p1, p2;
+    printf("parent: begin\n");
+    sem_init(&s1, 0, x); // init semaphores here
+    sem_init(&s2, 0, x); // init semaphores here
+    Pthread_create(&p1, NULL, child_1, NULL);
+    Pthread_create(&p2, NULL, child_2, NULL);
+    Pthread_join(p1, NULL);
+    Pthread_join(p2, NULL);
+    printf("parent: end\n");
+    return 0;
+}
+
+
+
+
+
+
+3.
+?????
+
+
+
+
+
+
+4.
+Now let’s solve the reader-writer problem, also as described in the text. 
+In this first take, don’t worry about starvation. 
+See the code in reader-writer.c for details. 
+Add sleep() calls to your code to demonstrate it works as you expect. 
+Can you show the existence of the starvation problem?
+---------------------------------
+?????voir barrier()??????
+
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <semaphore.h>
+#include "common_threads.h"
+
+// If done correctly, each child should print their "before" message
+// before either prints their "after" message. Test by adding sleep(1)
+// calls in various locations.
+
+// You likely need two semaphores to do this correctly, and some
+// other integers to track things.
+
+typedef struct __barrier_t { //Initialisierung von im folgenden Code verwendeten Variablen
+    // add semaphores and other information here
+    sem_t s1, s2;
+    int num_threads;
+    int i;
+} barrier_t;
+
+
+// the single barrier we are using for this program
+barrier_t b;
+
+void barrier_init(barrier_t *b, int num_threads) {
+    // initialization code goes here
+    sem_init(&b->s1, 0, x);
+    sem_init(&b->s2, 0, x);
+    b->num_threads = num_threads;
+    b->i = 0;
+}
+
+void barrier(barrier_t *b) {
+    // barrier code goes here
+    sem_wait(&b->s2);
+    b->i++;
+    sem_post(&b->s2);
+    
+    if(&b->i == 1) {//?????????????
+        sem_wait(&b->s1);
+    }
+    sem_post(&b->s1);
+}
+
+//
+// XXX: don't change below here (just run it!)
+//
+typedef struct __tinfo_t {
+    int thread_id;
+} tinfo_t;
+
+void *child(void *arg) {
+    tinfo_t *t = (tinfo_t *) arg;
+    printf("child %d: before\n", t->thread_id);
+    barrier(&b);
+    printf("child %d: after\n", t->thread_id);
+    return NULL;
+}
+
+
+// run with a single argument indicating the number of 
+// threads you wish to create (1 or more)
+int main(int argc, char *argv[]) {
+    assert(argc == 2);
+    int num_threads = atoi(argv[1]);
+    assert(num_threads > 0);
+
+    pthread_t p[num_threads];
+    tinfo_t t[num_threads];
+
+    printf("parent: begin\n");
+    barrier_init(&b, num_threads);
+    
+    int i;
+    for (i = 0; i < num_threads; i++) {
+	t[i].thread_id = i;
+	Pthread_create(&p[i], NULL, child, &t[i]);
+    }
+
+    for (i = 0; i < num_threads; i++) 
+	Pthread_join(p[i], NULL);
+
+    printf("parent: end\n");
+    return 0;
+}
+
+
+
+
+
+
+5.
+Let’s look at the reader-writer problem again, but this time, worry aboutstarvation.  
+How can you ensure that all readers and writers eventually make progress? 
+See reader-writer-nostarve.c for details.
+------------------------------------------------
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <semaphore.h>
+#include "common_threads.h"
+
+//
+// Your code goes in the structure and functions below
+//
+
+typedef struct __rwlock_t {
+    sem_t lock;
+    sem_t writelock;
+    int readers;
+} rwlock_t;
+
+
+void rwlock_init(rwlock_t *rw) {
+    rw->readers = 0;
+    sem_init(&rw->lock, 0, 1);
+    sem_init(&rw->writelock, 0, 1);
+}
+
+void rwlock_acquire_readlock(rwlock_t *rw) {
+    sem_wait(&rw->lock);
+    rw->readers++;
+    if(rw->readers == 1) {
+        sem_wait(&rw->writelock); //first reader acquires writelock
+    }
+    sem_post(&rw->lock);
+}
+
+void rwlock_release_readlock(rwlock_t *rw) {
+    sem_wait(&rw->lock);
+    rw->readers--;
+    if(rw->readers == 0) {
+        sem_pst(&rw->writelock); //last reader acquires writelock
+    }
+    sem_post(&rw->lock);
+}
+
+void rwlock_acquire_writelock(rwlock_t *rw) {
+    sem_wait(&rw->writelock);
+}
+
+void rwlock_release_writelock(rwlock_t *rw) {
+    sem_post(&rw->writelock);
+}
+
+//
+// Don't change the code below (just use it!)
+// 
+
+int loops;
+int value = 0;
+
+rwlock_t lock;
+
+void *reader(void *arg) {
+    int i;
+    for (i = 0; i < loops; i++) {
+	rwlock_acquire_readlock(&lock);
+	printf("read %d\n", value);
+	rwlock_release_readlock(&lock);
+    }
+    return NULL;
+}
+
+void *writer(void *arg) {
+    int i;
+    for (i = 0; i < loops; i++) {
+	rwlock_acquire_writelock(&lock);
+	value++;
+	printf("write %d\n", value);
+	rwlock_release_writelock(&lock);
+    }
+    return NULL;
+}
+
+int main(int argc, char *argv[]) {
+    assert(argc == 4);
+    int num_readers = atoi(argv[1]);
+    int num_writers = atoi(argv[2]);
+    loops = atoi(argv[3]);
+
+    pthread_t pr[num_readers], pw[num_writers];
+
+    rwlock_init(&lock);
+
+    printf("begin\n");
+
+    int i;
+    for (i = 0; i < num_readers; i++)
+	Pthread_create(&pr[i], NULL, reader, NULL);
+    for (i = 0; i < num_writers; i++)
+	Pthread_create(&pw[i], NULL, writer, NULL);
+
+    for (i = 0; i < num_readers; i++)
+	Pthread_join(pr[i], NULL);
+    for (i = 0; i < num_writers; i++)
+	Pthread_join(pw[i], NULL);
+
+    printf("end: value %d\n", value);
+
+    return 0;
+}
+
+
+
+
+
+
+6.
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <pthread.h>
+#include "common_threads.h"
+
+//
+// Here, you have to write (almost) ALL the code. Oh no!
+// How can you show that a thread does not starve
+// when attempting to acquire this mutex you build?
+//
+
+typedef __ns_mutex_t {
+    sem_t lock;
+} ns_mutex_t;
+
+ns_mutex_t ns_mutex;
+
+void ns_mutex_init(ns_mutex_t *m) { //Initialisierung
+    sem_init(&m->lock);
+}
+
+void ns_mutex_acquire(ns_mutex_t *m) { //Anfrage auf Lock
+    sem_wait(&m->lock);
+}
+
+void ns_mutex_release(ns_mutex_t *m) { //Lösen
+    sem_post(&m->lock);
+}
+
+
+void *worker(void *arg) {
+    ns_mutex_acquire(&ns_mutex);
+    printf("Worker is working\n");
+    ns_mutex_release(&ns_mutex);
+    return NULL;
+}
+
+int main(int argc, char *argv[]) {
+    assert(argc == 2); //assert -> to verify (=prüfen) number of arguments
+    int nums = atoi(argv[1]);
+    ns_mutex_init(&ns_mutex);
+    Pthread_create pc[nums];
+
+    printf("parent: begin\n");
+
+    int i;
+    for (i = 0; i < nums; i++)
+	Pthread_create(&pc[i], NULL, worker, NULL);
+
+    for (i = 0; i < nums; i++)
+	Pthread_join(pc[i], NULL);
+
+
+    printf("parent: end\n");
+    return 0;
+}
+
+
+
+
+

@@ -1,0 +1,18 @@
+Homeworks - Hard Disk Drives
+
+
+
+1.
+Compute the seek, rotation, and transfer times for the following sets of requests:
+----------------------------------------------------------
+-a 0
+-----> rotation:165	transer:30	total:195
+-a 6
+-----> rotation:165	transer:30	total:195
+-a 30
+-----> rotation:165	transer:30	total:195
+-a 7,30,8
+-----> rotation:165	transer:30	total:195
+-a 10,11,12,13
+-----> rotation:165	transer:30	total:195
+

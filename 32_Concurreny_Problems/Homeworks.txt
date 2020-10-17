@@ -1,0 +1,61 @@
+Homeworks - Concurrency Problems
+
+
+1.
+First let’s make sure you understand how the programs generally work, and some of the key options. 
+Study the code in vector-deadlock.c, as well as in main-common.c and related files.
+Now, run ./vector-deadlock -n 2 -l 1 -v, which instantiates two threads (-n 2), 
+each of which does one vector add (-l 1), and does so inverbose mode (-v). 
+Make sure you understand the output. 
+How does the output change from run to run?
+------------------------------------------------------------------no change
+->add(0, 1)
+<-add(0, 1)
+              ->add(0, 1)
+              <-add(0, 1)
+
+--> void print_info() der Klasse main-common.c
+--> verstehe ich nicht.....
+
+
+
+
+2.
+Now add the -d flag, and change the number of loops (-l) from 1 to higher numbers. 
+What happens? 
+Does the code (always) deadlock?
+------------------------------------------
+when verbose is not used, there will be a deadlock
+
+
+
+
+3.
+How does changing the number of threads (-n) change the outcome of the program? 
+Are there any values of -n that ensure no deadlock occurs?
+-------------------------------------------------
+No idea......
+
+
+
+
+___________________________________________________________________________________
+4.
+Now examine the code in vector-global-order.c. 
+First, make sure you understand what the code is trying to do; 
+do you understand why the code avoids deadlock? 
+Also, why is there a special case in this vector_add()routine when the source 
+and destination vectors are the same?
+----------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
