@@ -1,0 +1,421 @@
+CPU Scheduler - Homework
+
+------------------------------------------------------------------------------------------------
+FIFO = FirstInFirstOut 
+ - the job that enters the system first will be run at first
+ - jobs with different lengths are problems -> average turnaround time is very high
+SJF  = ShortJobFirst
+ - runs the shortest job first, then the next shortest, and so on...
+ - jobs arrive at the same time
+ - each job has to wait until one job is completely done
+ -> optimizes turnaround time
+ -> bad for response tim 
+RR   = RoundRobin
+ - runs a job for a time slice and then switches to the next  job in the run queue
+ - the shorter one job, the better the performance - but not too short (time slice)
+ - so there are three jobs, the time slice runs each job every 5 sec until every job is done
+ -> optimizes response time 
+ -> bad for turnaround time
+------------------------------------------------------
+./scheduler.py -p FIFO -j 3 -s 100
+(name des Programms) - (Art der Ausführung) - (Anzahl der Jobs) - (Länge des Jobs)
+
+  -s SEED, --seed=SEED  the random seed
+  -j JOBS, --jobs=JOBS  number of jobs in the system
+  -m MAXLEN, --maxlen=MAXLEN
+                        max length of job
+  -p POLICY, --policy=POLICY
+                        sched policy to use: SJF, FIFO, RR
+___________________________________________________________________
+
+1. 
+Compute the response time and turnaround time when running three jobs of length 200 
+with the SJF and FIFO schedulers.
+-------------------------------------------------------------FIFO --> new me: wrong! I did -s instead of -l
+ARG policy FIFO
+ARG jobs 3
+ARG maxlen 10
+ARG seed 200
+
+Here is the job list, with the run time of each job: 
+  Job 0 ( length = 1 )
+  Job 1 ( length = 3 )
+  Job 2 ( length = 8 )
+
+** Solutions **
+
+Execution trace:
+  [ time   0 ] Run job 0 for 1.00 secs ( DONE at 1.00 )
+  [ time   1 ] Run job 1 for 3.00 secs ( DONE at 4.00 )
+  [ time   4 ] Run job 2 for 8.00 secs ( DONE at 12.00 )
+
+Final statistics:
+  Job   0 -- Response: 0.00  Turnaround 1.00  Wait 0.00
+  Job   1 -- Response: 1.00  Turnaround 4.00  Wait 1.00
+  Job   2 -- Response: 4.00  Turnaround 12.00  Wait 4.00
+
+  Average -- Response: 1.67  Turnaround 5.67  Wait 1.67
+
+T(turnaround time) = (1 + 3 + 8) / 3 = 4s
+T(response time) - A = 0sec - B = 1sec - C = 4sec
+-------------------------------------------------------------SJF
+ARG policy SJF
+ARG jobs 3
+ARG maxlen 10
+ARG seed 200
+
+Here is the job list, with the run time of each job: 
+  Job 0 ( length = 1 )
+  Job 1 ( length = 3 )
+  Job 2 ( length = 8 )
+
+** Solutions **
+
+Execution trace:
+  [ time   0 ] Run job 0 for 1.00 secs ( DONE at 1.00 )
+  [ time   1 ] Run job 1 for 3.00 secs ( DONE at 4.00 )
+  [ time   4 ] Run job 2 for 8.00 secs ( DONE at 12.00 )
+
+Final statistics:
+  Job   0 -- Response: 0.00  Turnaround 1.00  Wait 0.00
+  Job   1 -- Response: 1.00  Turnaround 4.00  Wait 1.00
+  Job   2 -- Response: 4.00  Turnaround 12.00  Wait 4.00
+
+  Average -- Response: 1.67  Turnaround 5.67  Wait 1.67
+
+The same results as at FIFO.
+
+
+
+
+
+
+2.
+Now do the same but with jobs of different lengths: 100, 200, and 300.
+------------------------------------------------------------------------FIFO
+ARG policy FIFO
+ARG jobs 3
+ARG maxlen 10
+ARG seed 100
+
+Here is the job list, with the run time of each job: 
+  Job 0 ( length = 2 )
+  Job 1 ( length = 5 )
+  Job 2 ( length = 8 )
+
+** Solutions **
+
+Execution trace:
+  [ time   0 ] Run job 0 for 2.00 secs ( DONE at 2.00 )
+  [ time   2 ] Run job 1 for 5.00 secs ( DONE at 7.00 )
+  [ time   7 ] Run job 2 for 8.00 secs ( DONE at 15.00 )
+
+Final statistics:
+  Job   0 -- Response: 0.00  Turnaround 2.00  Wait 0.00
+  Job   1 -- Response: 2.00  Turnaround 7.00  Wait 2.00
+  Job   2 -- Response: 7.00  Turnaround 15.00  Wait 7.00
+
+  Average -- Response: 3.00  Turnaround 8.00  Wait 3.00
+..............................................................
+ARG policy FIFO
+ARG jobs 3
+ARG maxlen 10
+ARG seed 200
+
+Here is the job list, with the run time of each job: 
+  Job 0 ( length = 1 )
+  Job 1 ( length = 3 )
+  Job 2 ( length = 8 )
+
+** Solutions **
+
+Execution trace:
+  [ time   0 ] Run job 0 for 1.00 secs ( DONE at 1.00 )
+  [ time   1 ] Run job 1 for 3.00 secs ( DONE at 4.00 )
+  [ time   4 ] Run job 2 for 8.00 secs ( DONE at 12.00 )
+
+Final statistics:
+  Job   0 -- Response: 0.00  Turnaround 1.00  Wait 0.00
+  Job   1 -- Response: 1.00  Turnaround 4.00  Wait 1.00
+  Job   2 -- Response: 4.00  Turnaround 12.00  Wait 4.00
+
+  Average -- Response: 1.67  Turnaround 5.67  Wait 1.67
+...............................................................
+ARG policy FIFO
+ARG jobs 3
+ARG maxlen 10
+ARG seed 300
+
+Here is the job list, with the run time of each job: 
+  Job 0 ( length = 6 )
+  Job 1 ( length = 4 )
+  Job 2 ( length = 1 )
+
+
+** Solutions **
+
+Execution trace:
+  [ time   0 ] Run job 0 for 6.00 secs ( DONE at 6.00 )
+  [ time   6 ] Run job 1 for 4.00 secs ( DONE at 10.00 )
+  [ time  10 ] Run job 2 for 1.00 secs ( DONE at 11.00 )
+
+Final statistics:
+  Job   0 -- Response: 0.00  Turnaround 6.00  Wait 0.00
+  Job   1 -- Response: 6.00  Turnaround 10.00  Wait 6.00
+  Job   2 -- Response: 10.00  Turnaround 11.00  Wait 10.00
+
+  Average -- Response: 5.33  Turnaround 9.00  Wait 5.33
+-------------------------------------------------------------------SJF
+ARG policy SJF
+ARG jobs 3
+ARG maxlen 10
+ARG seed 100
+
+Here is the job list, with the run time of each job: 
+  Job 0 ( length = 2 )
+  Job 1 ( length = 5 )
+  Job 2 ( length = 8 )
+
+
+** Solutions **
+
+Execution trace:
+  [ time   0 ] Run job 0 for 2.00 secs ( DONE at 2.00 )
+  [ time   2 ] Run job 1 for 5.00 secs ( DONE at 7.00 )
+  [ time   7 ] Run job 2 for 8.00 secs ( DONE at 15.00 )
+
+Final statistics:
+  Job   0 -- Response: 0.00  Turnaround 2.00  Wait 0.00
+  Job   1 -- Response: 2.00  Turnaround 7.00  Wait 2.00
+  Job   2 -- Response: 7.00  Turnaround 15.00  Wait 7.00
+
+  Average -- Response: 3.00  Turnaround 8.00  Wait 3.00
+...........................................................
+ARG policy SJF
+ARG jobs 3
+ARG maxlen 10
+ARG seed 200
+
+Here is the job list, with the run time of each job: 
+  Job 0 ( length = 1 )
+  Job 1 ( length = 3 )
+  Job 2 ( length = 8 )
+
+
+** Solutions **
+
+Execution trace:
+  [ time   0 ] Run job 0 for 1.00 secs ( DONE at 1.00 )
+  [ time   1 ] Run job 1 for 3.00 secs ( DONE at 4.00 )
+  [ time   4 ] Run job 2 for 8.00 secs ( DONE at 12.00 )
+
+Final statistics:
+  Job   0 -- Response: 0.00  Turnaround 1.00  Wait 0.00
+  Job   1 -- Response: 1.00  Turnaround 4.00  Wait 1.00
+  Job   2 -- Response: 4.00  Turnaround 12.00  Wait 4.00
+
+  Average -- Response: 1.67  Turnaround 5.67  Wait 1.67
+............................................................
+ARG policy SJF
+ARG jobs 3
+ARG maxlen 10
+ARG seed 300
+
+Here is the job list, with the run time of each job: 
+  Job 0 ( length = 6 )
+  Job 1 ( length = 4 )
+  Job 2 ( length = 1 )
+
+
+** Solutions **
+
+Execution trace:
+  [ time   0 ] Run job 2 for 1.00 secs ( DONE at 1.00 )
+  [ time   1 ] Run job 1 for 4.00 secs ( DONE at 5.00 )
+  [ time   5 ] Run job 0 for 6.00 secs ( DONE at 11.00 )
+
+Final statistics:
+  Job   2 -- Response: 0.00  Turnaround 1.00  Wait 0.00
+  Job   1 -- Response: 1.00  Turnaround 5.00  Wait 1.00
+  Job   0 -- Response: 5.00  Turnaround 11.00  Wait 5.00
+
+  Average -- Response: 2.00  Turnaround 5.67  Wait 2.00
+
+
+
+
+
+
+3.
+Now do the same, but also with the RR scheduler and a time-slice of 1.
+-----------------------------
+  -q QUANTUM, --quantum=QUANTUM
+                        length of time slice for RR policy
+ -> preemption
+-----------------------------
+ARG policy RR
+ARG jobs 3
+ARG maxlen 10
+ARG seed 100
+
+Here is the job list, with the run time of each job: 
+  Job 0 ( length = 2 )
+  Job 1 ( length = 5 )
+  Job 2 ( length = 8 )
+
+
+** Solutions **
+
+Execution trace:
+  [ time   0 ] Run job   0 for 1.00 secs
+  [ time   1 ] Run job   1 for 1.00 secs
+  [ time   2 ] Run job   2 for 1.00 secs
+  [ time   3 ] Run job   0 for 1.00 secs ( DONE at 4.00 )
+  [ time   4 ] Run job   1 for 1.00 secs
+  [ time   5 ] Run job   2 for 1.00 secs
+  [ time   6 ] Run job   1 for 1.00 secs
+  [ time   7 ] Run job   2 for 1.00 secs
+  [ time   8 ] Run job   1 for 1.00 secs
+  [ time   9 ] Run job   2 for 1.00 secs
+  [ time  10 ] Run job   1 for 1.00 secs ( DONE at 11.00 )
+  [ time  11 ] Run job   2 for 1.00 secs
+  [ time  12 ] Run job   2 for 1.00 secs
+  [ time  13 ] Run job   2 for 1.00 secs
+  [ time  14 ] Run job   2 for 1.00 secs ( DONE at 15.00 )
+
+Final statistics:
+  Job   0 -- Response: 0.00  Turnaround 4.00  Wait 2.00
+  Job   1 -- Response: 1.00  Turnaround 11.00  Wait 6.00
+  Job   2 -- Response: 2.00  Turnaround 15.00  Wait 7.00
+
+  Average -- Response: 1.00  Turnaround 10.00  Wait 5.00
+................................................................
+ARG policy RR
+ARG jobs 3
+ARG maxlen 10
+ARG seed 200
+
+Here is the job list, with the run time of each job: 
+  Job 0 ( length = 1 )
+  Job 1 ( length = 3 )
+  Job 2 ( length = 8 )
+
+
+** Solutions **
+
+Execution trace:
+  [ time   0 ] Run job   0 for 1.00 secs ( DONE at 1.00 )
+  [ time   1 ] Run job   1 for 1.00 secs
+  [ time   2 ] Run job   2 for 1.00 secs
+  [ time   3 ] Run job   1 for 1.00 secs
+  [ time   4 ] Run job   2 for 1.00 secs
+  [ time   5 ] Run job   1 for 1.00 secs ( DONE at 6.00 )
+  [ time   6 ] Run job   2 for 1.00 secs
+  [ time   7 ] Run job   2 for 1.00 secs
+  [ time   8 ] Run job   2 for 1.00 secs
+  [ time   9 ] Run job   2 for 1.00 secs
+  [ time  10 ] Run job   2 for 1.00 secs
+  [ time  11 ] Run job   2 for 1.00 secs ( DONE at 12.00 )
+
+Final statistics:
+  Job   0 -- Response: 0.00  Turnaround 1.00  Wait 0.00
+  Job   1 -- Response: 1.00  Turnaround 6.00  Wait 3.00
+  Job   2 -- Response: 2.00  Turnaround 12.00  Wait 4.00
+
+  Average -- Response: 1.00  Turnaround 6.33  Wait 2.33
+............................................................
+
+ARG policy RR
+ARG jobs 3
+ARG maxlen 10
+ARG seed 300
+
+Here is the job list, with the run time of each job: 
+  Job 0 ( length = 6 )
+  Job 1 ( length = 4 )
+  Job 2 ( length = 1 )
+
+
+** Solutions **
+
+Execution trace:
+  [ time   0 ] Run job   0 for 1.00 secs
+  [ time   1 ] Run job   1 for 1.00 secs
+  [ time   2 ] Run job   2 for 1.00 secs ( DONE at 3.00 )
+  [ time   3 ] Run job   0 for 1.00 secs
+  [ time   4 ] Run job   1 for 1.00 secs
+  [ time   5 ] Run job   0 for 1.00 secs
+  [ time   6 ] Run job   1 for 1.00 secs
+  [ time   7 ] Run job   0 for 1.00 secs
+  [ time   8 ] Run job   1 for 1.00 secs ( DONE at 9.00 )
+  [ time   9 ] Run job   0 for 1.00 secs
+  [ time  10 ] Run job   0 for 1.00 secs ( DONE at 11.00 )
+
+Final statistics:
+  Job   0 -- Response: 0.00  Turnaround 11.00  Wait 5.00
+  Job   1 -- Response: 1.00  Turnaround 9.00  Wait 5.00
+  Job   2 -- Response: 2.00  Turnaround 3.00  Wait 2.00
+
+  Average -- Response: 1.00  Turnaround 7.67  Wait 4.00
+
+
+
+
+
+
+4.
+For what types of workloads does SJF deliver the same turnaround times as FIFO?
+---------------------------------------
+workload = the processes running in the system
+---------------------------------------
+ - each job has to start at the same time
+ - the jobs have to be sorted -> shortest job always first, the next shorter one, and so on
+
+
+
+
+
+5.
+For what types of workloads and quantum lengths does SJF deliver the same response times as RR?
+---------------------------------------
+time slice = scheduling quantum
+RR = time-slicing
+!the length of a time slice must be a multiple of the timer-interrupt period!
+---------------------------------------
+ - the jobs have to been ordered -> shortest job first
+ - SJF -> not all jobs have to arrive at the same time
+ - so...each job has to arrive at the quantum of RR
+-----> A (2sec long, starts 0), B (4sec long, starts 2), C (6sec long, starts 4)
+       response time (SJF): A=0 - B=2 - C=4
+       response time (RR) : A=0 - B=2 - C=4 -- time-slice = 2
+
+
+
+
+
+
+
+
+6.
+What happens to response time with SJF as job lengths increase?
+Can you use the simulator to demonstrate the trend?
+---------------------------------------
+
+
+
+
+
+
+7.
+What happens to response time with RR as quantum lengths increase? 
+Can you write an equation that gives the worst-case response time, given N jobs?
+---------------------------------------
+
+
+
+
+
+
+
+
+

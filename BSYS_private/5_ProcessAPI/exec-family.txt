@@ -1,0 +1,31 @@
+
+integration: #include <unistd.h>
+
+--------------------------------------------------------------------------------------------------
+
+The exec() family of functions replaces the current process image with a new process image.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+int execl(const char *path, const char *arg, ...);
+int execlp(const char *file, const char *arg, ...);
+int execle(const char *path, const char *arg,..., char * const envp[]);
+__________________________________________________________________________
+
+The const char *arg and subsequent ellipses in the execl(), execlp(), and execle() functions 
+can be thought of as arg0, arg1, ..., argn. Together they describe a list of one or more pointers 
+to null-terminated strings that represent the argument list available to the executed program. 
+The first argument, by convention, should point to the filename associated with the file being executed. 
+The list of arguments must be terminated by a NULL pointer, and, since these are variadic functions, this pointer must be cast (char *) NULL. 
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+int execv(const char *path, char *const argv[]);
+int execvp(const char *file, char *const argv[]);
+int execvpe(const char *file, char *const argv[], char *const envp[]);
+__________________________________________________________________________
+
+The execv(), execvp(), and execvpe() functions provide an array of pointers to null-terminated strings 
+that represent the argument list available to the new program. The first argument, by convention, should point 
+to the filename associated with the file being executed. The array of pointers must be terminated by a NULL pointer. 
+

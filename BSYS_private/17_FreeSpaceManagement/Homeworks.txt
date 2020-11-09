@@ -1,0 +1,106 @@
+Free Space Management - Homework
+
+
+
+1.
+First run with the ﬂags -n 10 -H 0 -p BEST -s 0 to generate a few random allocations and frees. 
+Can you predict what alloc()/free() will return?
+----------------------------------------------------
+-n -> number of random ops to generator
+-H -> size of the header
+-p -> list search (BEST, WORST, FIRST)
+-s -> the random seed
+---------------------------------------------------- 
+seed 0
+size 100
+baseAddr 1000
+headerSize 0
+alignment -1
+policy BEST
+listOrder ADDRSORT
+coalesce False
+numOps 10
+range 10
+percentAlloc 50
+allocList 
+compute False
+
+
+ptr[0] = Alloc(3)  returned ?
+List? 
+----------
+we start at address 1000
+Free List: [address:1003, size:97]
+
+
+Free(ptr[0]) returned ?
+List? 
+----------
+Free List: [address:1000, size:3] [address:1003, size:97]
+
+
+ptr[1] = Alloc(5)  returned ?
+List? 
+---------
+we start at address 1003
+Free List: [address:1000, size:3] [address: 1008, size:92]
+
+
+Free(ptr[1]) returned ?
+List? 
+---------
+Free List: [address:1000, size:3] [address:1003, size:5] [address:1008, size:92]
+
+
+ptr[2] = Alloc(8)  returned ?
+List? 
+--------
+we start at address 1008
+Free List: [address:1000, size:3] [address:1003, size:5] [address:1016, size:84]
+
+
+Free(ptr[2]) returned ?
+List? 
+--------
+Free List: [address:1000, size:3] [address:1003, size:5] [address:1008, size:8] [address:1016, size:84]
+
+
+ptr[3] = Alloc(8)  returned ?
+List? 
+--------
+we start at address 1016
+Free List: [address:1000, size:3] [address:1003, size:5] [address:1008, size:8] [address:1016, size:84]
+
+
+Free(ptr[3]) returned ?
+List? 
+
+ptr[4] = Alloc(2)  returned ?
+List? 
+
+ptr[5] = Alloc(7)  returned ?
+List? 
+
+_____________________________________________________________
+Can you guess the state of the free list after each request?
+---------------------------------------------------- 
+_____________________________________________________________
+What do you notice about the free list over time?
+----------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
