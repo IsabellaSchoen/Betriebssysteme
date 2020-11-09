@@ -1,0 +1,56 @@
+HOMEWORK
+
+1)
+1.1)
+---------------------------------
+hello world (PID:1788)
+value x at the beginning: 100
+parent of 1789 (PID:1788) with value x:100
+child (PID:1789) with value x:100
+
+1.2) changing value x
+--------------------------------
+hello world (PID:1797)
+value x at the beginning: 100
+parent of 1798 (PID:1797) with value x:500
+child (PID:1798) with value x:800
+------------------------------------
+SOLUTION:
+even though the child is an almost exact copy of the parent, the value changes for the child and the parent
+in a different way
+
+
+
+2)
+write(fd1, buf, strlen(buf)); 
+fd1: is the file descriptor
+buf: is the character array used to hold the data
+strlen(buf): informs the function that the number of bytes equal to the length of the string in the buffer need to be copied
+------------------------------------
+SOLUTION:
+der vorherige Text in der Datei was replaced by the text of the child and parent
+
+
+
+
+
+3)
+sleep(): -places it into an inactive state for a period of time
+         -causes the calling thread to sleep either until the number of real-time seconds specified in seconds have elapsed or 
+          until a signal arrives which is not ignored.
+------------------------------------
+SOLUTION:
+hello
+goodbye
+--> first prints the child and then the parent
+
+
+
+
+4)
+
+
+
+
+
+
