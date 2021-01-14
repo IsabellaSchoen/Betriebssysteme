@@ -1,0 +1,231 @@
+HOMEWORKS
+
+
+
+1)
+- circular-wait: erst dst dann src
+
+
+./vector-deadlock -n 2 -l 1 -v
+->add(0, 1) //Vector1 wird Vector0 hinzugefügt
+<-add(0, 1)
+              ->add(0, 1)
+              <-add(0, 1)
+
+./vector-deadlock -n 2 -l 1 -v
+->add(0, 1)
+<-add(0, 1)
+              ->add(0, 1)
+              <-add(0, 1)
+
+
+
+
+2)
+./vector-deadlock -n 2 -l 1 -d -v
+->add(0, 1)
+<-add(0, 1)
+              ->add(1, 0)
+              <-add(1, 0)
+
+./vector-deadlock -n 2 -l 1 -v
+->add(0, 1)
+<-add(0, 1)
+              ->add(0, 1)
+              <-add(0, 1)
+
+
+
+i=0; while true; do ./vector-deadlock -d -n 2 -l 10 -v; ((i = $i + 1 )); echo $i; done
+
+<-add(0, 1)
+->add(0, 1)
+              ->add(1, 0)
+
+
+
+
+3)
+
+-v --> Deadlocks
+
+
+je höher n -> mehr wahrscheinlichkeit für deadlock
+
+wenn n=1 -> keinen Deadlock, weil nur einen Thread
+
+
+
+-----------------------------
+
+
+4)
+- circular-wait abhängig von adressen der vectoren - nicht vorhanden
+- mutual exclusion vorhanden
+- no preemption vorhanden (╯°□°）╯︵ ┻━┻
+- hold-and-wait vorhanden
+
+
+5)
+./vector-global-order -t -n 2 -l 10000 -d
+Time: 0.00 seconds
+--> weil kein deadlock
+--> wenn die Anzahl von -l und -n erhöht wird, dann time increases
+--> -l: Anzahl Wiederholung pro Thread erhöhen
+
+
+6)
+./vector-global-order -t -n 2 -l 100000 -d -p
+Time: 0.07 seconds
+./vector-global-order -t -n 2 -l 100000 -d
+Time: 0.09 seconds
+./vector-global-order -t -n 2 -l 100000 -d
+Time: 0.08 seconds
+./vector-global-order -t -n 2 -l 100000 -d -p
+Time: 0.05 seconds
+--> wenn pro Thread eigene Vectoren vorhanden sind und man nicht auf die Vectoren vom anderen 
+Thread warten muss, ist es schneller
+
+
+
+---------------------------------
+
+7)
+- no preemption nicht vorhanden - Kriterium nicht erfüllt (╯°□°）╯︵ ┻━┻
+-> solange schleife laufen lassen bis dst geholt
+- das gleiche mit src
+
+- wenn beide locks: Addition
+
+- hold-and-wait vorhanden
+- mutual exclusion vorhanden
+- circular wait vorhanden
+
+- int pthread_mutex_lock(pthread_mutex_t *mutex);
+ --> If the mutex is already locked, the calling thread shall block until the mutex becomes available.
+ --> pthread_mutex_trylock() function shall be equivalent to pthread_mutex_lock(), 
+     except that if the mutex object referenced by mutex is currently locked, the call shall return immediately
+ --> 0: success
+ --> !0: fail
+
+- erstes trylock eher nicht, weil mit direktem Aufruf sicher gestellt wird, dass der Lock gehalten wird
+- aber, wenn der Lock bereits gehalten wird, dann muss auf diesem gewartet wird
+- es dient eher zur Vorsichtsmaßnahme, gebraucht wird es aber eher nicht
+(╯°□°）╯︵ ┻━┻ (╯°□°）╯︵ ┻━┻ (╯°□°）╯︵ ┻━┻
+- das zweite trylock ist wichtig!!!
+
+
+
+./vector-try-wait -t -n 2 -l 1000 -d
+Retries: 0
+Time: 0.00 seconds
+./vector-try-wait -t -n 2 -l 10000 -d
+Retries: 0
+Time: 0.01 seconds
+./vector-try-wait -t -n 2 -l 100000 -d
+Retries: 512710
+Time: 0.19 seconds
+./vector-try-wait -t -n 2 -l 100000
+Retries: 149501
+Time: 0.13 seconds
+./vector-try-wait -t -n 4 -l 100
+Retries: 0
+Time: 0.00 seconds
+./vector-try-wait -t -n 80 -l 100
+Retries: 6129
+Time: 0.04 seconds
+./vector-try-wait -t -n 80 -l 100000
+^C
+./vector-try-wait -t -n 8 -l 100000
+Retries: 173619
+Time: 1.01 seconds
+./vector-try-wait -t -n 8 -l 100000 -d
+Retries: 6993720
+Time: 2.10 seconds
+
+--> im Vergleich zu global
+./vector-try-wait -t -n 8 -l 100000 -d
+Retries: 6993720
+Time: 2.10 seconds
+./vector-global-order -t -n 8 -l 100000 -d
+Time: 0.31 seconds
+--> global ist schneller: if-else
+--> try-wait: for(): warten auf lock
+    --> livelock???? kann vorkommen, aber sure?? we dunno (╯°□°）╯︵ ┻━┻
+
+
+----------------------------
+
+
+8)
+
+- hold-and-wait eher nicht vorhanden...
+- circular wait vorhanden
+- mutual exclusion vorhanden
+- no preemption ist vorhanden
+
+
+./vector-avoid-hold-and-wait -t -n 8 -l 1000000 -d -p
+Time: 1.63 seconds
+./vector-global-order -t -n 8 -l 1000000 -d -p
+Time: 0.76 seconds
+./vector-try-wait -t -n 8 -l 1000000 -d -p
+Retries: 0
+Time: 0.82 seconds
+./vector-deadlock -t -n 8 -l 1000000 -d -p
+Time: 0.81 seconds
+
+
+
+./vector-avoid-hold-and-wait -t -n 99 -l 100000 -d -p
+Time: 2.14 seconds
+./vector-global-order -t -n 99 -l 100000 -d -p
+Time: 0.94 seconds
+
+
+--> bei avoid hold and wait muss man immer auf das global Löckchen warten 
+
+
+
+-----------------------------------
+
+
+
+9)
+asm -> assembler
+volatile -> compiler soll assembler code ausführen
+%%eax -> Register, Wert geaddet 
+%2 -> destinationVector, Adresse von variable
+lock->ist ein Lock aber nicht so typisch, bestimmter assembler welcher sich auf nächste zeile bezieht,
+welche nur von einem Thread benutzt werden darf
+Ein Hardware Lock, weil auf Adresse wo Befehl steht darf nicht zugegriffen werden
+
+24: %0
+25: %1, %2
+
+
+10)
+./vector-nolock -t -n 8 -l 100000 -p
+Time: 0.34 seconds
+./vector-nolock -t -n 8 -l 100000
+Time: 0.62 seconds
+./vector-global-order -t -n 8 -l 100000 -p
+Time: 0.09 seconds
+./vector-global-order -t -n 8 -l 100000
+Time: 0.16 seconds
+./vector-try-wait -t -n 8 -l 100000 -p
+Retries: 0
+Time: 0.10 seconds
+./vector-try-wait -t -n 8 -l 100000
+Retries: 156743
+Time: 0.76 seconds
+./vector-avoid-hold-and-wait -t -n 8 -l 100000 -p
+Time: 0.18 seconds
+./vector-avoid-hold-and-wait -t -n 8 -l 100000
+Time: 0.19 seconds
+
+--> keine concurrency bei nolock
+--> Hardware-Lock bei fetch_and_add()
+
+
+

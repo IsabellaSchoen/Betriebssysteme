@@ -23,5 +23,17 @@ int main(int argc, char *argv[]) {
     }
 
     return 0;
+
+/*
+The following symbolic constants shall be defined for file streams:
+
+STDERR_FILENO
+    File number of stderr; 2.
+STDIN_FILENO
+    File number of stdin; 0.
+STDOUT_FILENO
+    File number of stdout; 1.
+*/
+
 }
 

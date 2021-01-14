@@ -1,0 +1,80 @@
+HOMEWORKS
+
+
+
+2)
+./simplecounter 10 30
+Measured time: 1238132 ns 
+Measured time: 1238 microsec 
+
+
+
+./simplecounter 10
+Measured time: 1359754 ns 
+Measured time: 1359 microsec 
+
+
+
+
+
+
+3)
+./slobbycounter 30
+ThreadID 0
+ThreadID 1
+ThreadID 2
+ThreadID 3
+ThreadID 7
+ThreadID 5
+ThreadID 6
+ThreadID 4
+ThreadID 8
+ThreadID 9
+ThreadID 10
+ThreadID 11
+ThreadID 12
+ThreadID 13
+ThreadID 14
+ThreadID 21
+ThreadID 17
+ThreadID 22
+ThreadID 15
+ThreadID 20
+ThreadID 18
+ThreadID 23
+ThreadID 16
+ThreadID 19
+ThreadID 24
+ThreadID 25
+ThreadID 27
+ThreadID 26
+ThreadID 29
+ThreadID 28
+Measured time: 6312749 ns 
+Measured time: 6312 microsec 
+
+
+
+
+
+4)
+./LinkedList 1
+Measured time: 199403 ns 
+Measured time: 199 microsec 
+
+
+
+5)
+./ConcurrentQueue 10
+Measured time Enqueue: 1083845 ns 
+Measured time Enqueue: 1083 microsec 
+Measured time Dequeue: 848839 ns 
+Measured time Dequeue: 848 microsec 
+
+
+
+6)
+./LinkedHashMap 1
+Measured time: 280115 ns 
+Measured time: 280 microsec 
+

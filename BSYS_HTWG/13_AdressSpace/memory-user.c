@@ -14,22 +14,38 @@ int main(int argc, char *argv[])
 
     printf("PID: %d\n",getpid());
 
-    int alloc = atoi(argv[1]) * 1000000 ;
+    int memorySize = atoi(argv[1]) * 1000000; //bytes into megabytes - the number of MB of memory the program will use
 
-    int time = atoi(argv[2]);
+    int amountOfTime = atoi(argv[2]); //certain amount of time
 
-    char *bytes = (char*) calloc(alloc, sizeof(char));
-    if(bytes == NULL)
+    
+    //alloc(nitems, size)
+    //nitems − This is the number of elements to be allocated.
+    //size − This is the size of elements.
+
+    //wenn wir free laufen lassen in der Konsole in der VM, dann wird uns eine Tabelle mit free und used memory gezeigt
+    //dies passiert hier nun auch, indem wir eine bestimmte Anzahl von memory allokieren und durch die uns angegbene
+    //Tabelle dann gehen und jeden Eintrag von dieser berühren, dies passiert im Folgenden:
+
+    char *array = (char*) calloc(memorySize, sizeof(char)); //allocating array and stream through it and touching each entry
+    if(array == NULL)
     {
         fprintf(stderr, "failed to allocate bytes");
         return 1;
+    } else
+    {
+        for(int i = 0; i < sizeof(array); i++)
+        {
+            printf("Entry: %d\n", array[i]);
+        }
     }
+    
 
-    printf("old bytes: %d\n", alloc);
+    printf("allocated bytes of memory: %d\n", memorySize);
 
-    sleep(time);
+    sleep(amountOfTime); //touching happens for a certain amount of time
 
-    free(bytes);
+    free(array);
 
     return 0;
 }

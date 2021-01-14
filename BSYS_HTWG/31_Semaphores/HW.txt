@@ -1,0 +1,95 @@
+HOMEWORKS
+
+
+
+1)
+Code zu Beginn:
+parent: begin
+child
+parent: end
+_____________________
+./fork-join
+parent: begin
+child
+parent: end
+
+
+
+2)
+Code zu Beginn:
+parent: begin
+child 1: before
+child 1: after
+child 2: before
+child 2: after
+parent: end
+____________________
+./rendezvous
+parent: begin
+child 2: before
+child 1: before
+child 1: after
+child 2: after
+parent: end
+
+
+
+
+
+3)
+Code zu Beginn:
+./barrier 2
+parent: begin
+child 0: before
+child 0: after
+child 1: before
+child 1: after
+parent: end
+
+
+
+
+
+
+
+
+
+4)
+Code zu Beginn:
+./reader-writer 1 2 3
+begin
+read 0
+read 1
+read 1
+write 1
+write 2
+write 3
+write 4
+write 5
+write 6
+end: value 6
+__________________
+./reader-writer 5 3 1
+begin
+read 0
+read 0
+read 0
+read 0
+read 0
+write 1
+write 2
+write 3
+end: value 3
+
+
+
+
+
+
+
+
+
+
+
+
+

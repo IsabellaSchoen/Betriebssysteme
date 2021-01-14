@@ -1,0 +1,43 @@
+ProgrammCode - Kapitel 27
+
+
+./thread_create
+10 20
+done
+
+
+
+
+./thread_wait
+args 10 20
+returned 1 2
+
+
+./thread_dangerous
+thread_dangerous.c: In function ‘mythread’:
+thread_dangerous.c:19:21: error: invalid initializer
+     myret_t rvals = malloc(sizeof(myret_t));
+                     ^~~~~~
+In file included from common_threads.h:5:0,
+                 from thread_dangerous.c:4:
+thread_dangerous.c:20:18: error: invalid operands to binary != (have ‘myret_t {aka struct <anonymous>}’ and ‘void *’)
+     assert(rvals != NULL);
+                  ^
+thread_dangerous.c:20:18: error: invalid operands to binary != (have ‘myret_t {aka struct <anonymous>}’ and ‘void *’)
+     assert(rvals != NULL);
+                  ^
+thread_dangerous.c:21:10: error: invalid type argument of ‘->’ (have ‘myret_t {aka struct <anonymous>}’)
+     rvals->x = 1;
+          ^~
+thread_dangerous.c:22:10: error: invalid type argument of ‘->’ (have ‘myret_t {aka struct <anonymous>}’)
+     rvals->y = 2;
+          ^~
+thread_dangerous.c:23:12: warning: function returns address of local variable [-Wreturn-local-addr]
+     return (void *) &rvals;
+            ^~~~~~~~~~~~~~~
+
+
+
+./simple_args
+100
+returned 101
