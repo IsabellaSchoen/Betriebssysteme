@@ -1,0 +1,206 @@
+HOMRWORKS
+
+
+
+1 Rotation = 360 times
+12 sectors per track
+each sector takes 30 degress of the rotational space
+30 time units to read a sector
+40 time units per seek
+
+
+
+
+1)
+-a 0
+seek = 0 - weil auf demselben track
+rotation = 165, weil pro track sind es 30 time units. Von 6 bis 0 sind 165, weil zwischen 11 und 0 der Track bereits beginnt
+transfer = 30, weil Daten im gesamten Track abgelesen werden müssen und jeder track 30 time units braucht
+
+
+-a 6
+seek = 0 - weil auf demselben track
+wir müssen rotieren, weil wir zu dem Anfang vom Track müssen
+rotation = 345 - eine ganze Umdrehung dauert 360, aber weil bei 345 schon der Track beginnt
+transfer = 30, weil Daten im gesamten Track abgelesen werden müssen und jeder track 30 time units braucht
+
+
+-a 30
+ab track 6 seek
+ab track 33 rotate
+
+seek = 80, weil wir von ganz außen nach ganz innen wollen
+rotate = 265, weil ab track 33 beginnen und wir wollen zu sektor 30 - wir beginnen bei sektorstart+5time units - deshalb 240 + 25, also 25 time units
+brauchen wir um sektor 33 zu beenden
+transfer = 30
+
+
+-a 7,30,8
+Block:   7  Seek:  0  Rotate: 15  Transfer: 30  Total:  45
+Block:  30  Seek: 80  Rotate:220  Transfer: 30  Total: 330
+Block:   8  Seek: 80  Rotate:310  Transfer: 30  Total: 420
+TOTALS      Seek:160  Rotate:545  Transfer: 90  Total: 795
+
+s
+-a 10,11,12,13
+Block:  10  Seek:  0  Rotate:105  Transfer: 30  Total: 135
+Block:  11  Seek:  0  Rotate:  0  Transfer: 30  Total:  30
+Block:  12  Seek: 40  Rotate:320  Transfer: 30  Total: 390
+Block:  13  Seek:  0  Rotate:  0  Transfer: 30  Total:  30
+TOTALS      Seek: 40  Rotate:425  Transfer:120  Total: 585
+
+
+
+
+2)
+---------------------------- -S 2
+-a 30
+Block:  30  Seek: 40  Rotate:305  Transfer: 30  Total: 3
+--> durch seek bewegt sich der arm schneller, weshalb rotation höher ist, weil wir bei einem anderen Sektor anfangen
+
+-a 7,30,8
+Block:   7  Seek:  0  Rotate: 15  Transfer: 30  Total:  45
+Block:  30  Seek: 40  Rotate:260  Transfer: 30  Total: 330
+Block:   8  Seek: 40  Rotate:350  Transfer: 30  Total: 420
+TOTALS      Seek: 80  Rotate:625  Transfer: 90  Total: 795
+--> seek schneller, rotate dadurch langsamer, transfer gleich
+
+-a 11,12,13,14
+Block:  10  Seek:  0  Rotate:105  Transfer: 30  Total: 135
+Block:  11  Seek:  0  Rotate:  0  Transfer: 30  Total:  30
+Block:  12  Seek: 20  Rotate:340  Transfer: 30  Total: 390
+Block:  13  Seek:  0  Rotate:  0  Transfer: 30  Total:  30
+TOTALS      Seek: 20  Rotate:445  Transfer:120  Total: 585
+--> kein wirklicher unterschied
+
+------------------------------------ -a 7,30,8
+--> bei Seek 4 bereits einen großen Unterschied
+Block:   7  Seek:  0  Rotate: 15  Transfer: 30  Total:  45
+Block:  30  Seek: 20  Rotate:280  Transfer: 30  Total: 330
+Block:   8  Seek: 20  Rotate: 10  Transfer: 30  Total:  60
+TOTALS      Seek: 40  Rotate:305  Transfer: 90  Total: 435
+--> je höher das Seek, desto besser wir die 8 nach der 30 erreicht, aber dafür ist die Rotation höher
+--> je schneller Seek, desto früher Rotate zählen
+--> Seek beschleunigt den Arm
+
+
+------------------------------------ -a 11,12,13,14
+--> ohne tracks skew kein Unterschied
+
+------------------------------------- -a 0, -a 6
+--> kein Unterschied, weil kein seek und auf der selben Platte
+
+
+------------------------------------- -S 0.1
+--> eine absolute Katastrophe
+--> der Arm wird sehr verlangsamt dadurch
+--> aber!!! sehr viel Seek, wenig Rotate wenn im Seek
+
+
+
+
+3)
+--> je geringer R, desto eher gleicht es sich dem track skew
+--> z.B. bei "-a 7,30,8" wird die 8 früher erreicht als ohne R
+--> bei "-a 10,11,12,13" ist R 0.01 am besten; braucht halt irre viel Zeit
+
+
+
+4)
+-----SSTF
+--> shortest seek time first
+--> somit kommt nach der 7 nicht die 30, sondern die 8, weil auf gleicher platte und seek am kürzesten
+
+Block:   7  Seek:  0  Rotate: 15  Transfer: 30  Total:  45
+Block:   8  Seek:  0  Rotate:  0  Transfer: 30  Total:  30
+Block:  30  Seek: 80  Rotate:190  Transfer: 30  Total: 300
+TOTALS      Seek: 80  Rotate:205  Transfer: 90  Total: 3
+
+
+
+5)
+-----SATF
+--> shortest access-time first
+--> kürzeste access time = seek + rotation
+--> wo man am schnellsten hinkommt
+Block:   7  Seek:  0  Rotate: 15  Transfer: 30  Total:  45
+Block:   8  Seek:  0  Rotate:  0  Transfer: 30  Total:  30
+Block:  30  Seek: 80  Rotate:190  Transfer: 30  Total: 300
+TOTALS      Seek: 80  Rotate:205  Transfer: 90  Total: 375
+
+--> our solution:
+-a 7,18,35
+
+
+
+6)
+
+Seek_Time/Rotation_Time = Skew
+
+
+7)
+
+1 / (Anzahl_Sektoren * Rotation_Speed)
+
+
+
+
+8)
+-A: Zufallszahle
+-1: max wert
+0: kleinste Zahl
+
+-w: wie weit man vorraus schauen kann
+
+
+TOTALS      Seek:20960  Rotate:169165  Transfer:30000  Total:220125 -w1
+TOTALS      Seek:8080   Rotate:26555   Transfer:30000  Total:64635  -w10
+TOTALS      Seek:1440   Rotate:5835    Transfer:30000  Total:37275  -w100
+TOTALS      Seek:1520   Rotate:3955    Transfer:30000  Total:35475  -w1000
+
+
+-> logarithmisch, weil je größer das w desto besser
+
+-> alles funktioniert wie FIFO, nichts ist vorrausschaubar
+
+
+
+9)
+-> -w: 4
+--> erst werden die 4 abgearbeitet
+--> damit die 30 nicht stirbt, nimmt es die 30 noch rein
+
+TOTALS      Seek:160  Rotate:185  Transfer:180  Total: 525
+
+
+--> bei SATF stirbt die 30
+
+TOTALS      Seek: 80  Rotate:115  Transfer:180  Total: 375
+
+-a 7,30,8,9,10,11
+
+
+
+10)
+-a 9,20 
+--> FIFO
+--> erst 9, dann 20
+
+-a 9,20 -p SATF
+--> erst 20, dann 9
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

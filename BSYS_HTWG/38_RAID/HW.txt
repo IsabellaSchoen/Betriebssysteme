@@ -1,0 +1,236 @@
+HOMEWORKS
+
+
+1)
+disk   = address % number_of_disks
+offset = address / number_of_disks
+
+--------------------------RAID0
+ARG blockSize 4096
+ARG seed 0
+ARG numDisks 4
+ARG chunkSize 4k
+ARG numRequests 10
+ARG reqSize 4k
+ARG workload rand
+ARG writeFrac 0
+ARG randRange 10000
+ARG level 0
+ARG raid5 LS
+ARG reverse False
+ARG timing False
+
+
+LOGICAL READ from addr:8444 size:4096
+  read  [disk 0, offset 2111]   
+--> disk = 8444 % 4 = 0
+--> offset = 8444 / 4 = 2111
+LOGICAL READ from addr:4205 size:4096
+  read  [disk 1, offset 1051]   
+LOGICAL READ from addr:5112 size:4096
+  read  [disk 0, offset 1278]   
+LOGICAL READ from addr:7837 size:4096
+  read  [disk 1, offset 1959]   
+LOGICAL READ from addr:4765 size:4096
+  read  [disk 1, offset 1191]   
+LOGICAL READ from addr:9081 size:4096
+  read  [disk 1, offset 2270]   
+LOGICAL READ from addr:2818 size:4096
+  read  [disk 2, offset 704]   
+LOGICAL READ from addr:6183 size:4096
+  read  [disk 3, offset 1545]   
+--> 1545,75 -> 0,75*4
+LOGICAL READ from addr:9097 size:4096
+  read  [disk 1, offset 2274]   
+LOGICAL READ from addr:8102 size:4096
+  read  [disk 2, offset 2025] 
+
+
+--------------------------RAID1
+LOGICAL READ from addr:5 size:4096
+  read  [disk 2, offset 2]   
+LOGICAL READ from addr:2 size:4096
+  read  [disk 1, offset 1]   
+LOGICAL READ from addr:3 size:4096
+  read  [disk 3, offset 1]   
+LOGICAL READ from addr:5 size:4096
+  read  [disk 2, offset 2]   
+LOGICAL READ from addr:3 size:4096
+  read  [disk 3, offset 1]   
+LOGICAL READ from addr:6 size:4096
+  read  [disk 1, offset 3]   
+LOGICAL READ from addr:1 size:4096
+  read  [disk 2, offset 0]   
+LOGICAL READ from addr:4 size:4096
+  read  [disk 0, offset 2]   
+LOGICAL READ from addr:6 size:4096
+  read  [disk 1, offset 3]   
+LOGICAL READ from addr:5 size:4096
+  read  [disk 2, offset 2]   
+
+--> das offset anschauen, gleich -> streifen
+--> erste und drittletzte Zeile sind gleicher Streifen
+--> beide sind in einer anderen virtuellen Adresse
+
+
+--------------------------RAID4
+
+LOGICAL READ from addr:8 size:4096
+  read  [disk 2, offset 2]   
+LOGICAL READ from addr:4 size:4096
+  read  [disk 1, offset 1]   
+LOGICAL READ from addr:5 size:4096
+  read  [disk 2, offset 1]   
+LOGICAL READ from addr:7 size:4096
+  read  [disk 1, offset 2]   
+LOGICAL READ from addr:4 size:4096
+  read  [disk 1, offset 1]   
+LOGICAL READ from addr:9 size:4096
+  read  [disk 0, offset 3]   
+LOGICAL READ from addr:2 size:4096
+  read  [disk 2, offset 0]   
+LOGICAL READ from addr:6 size:4096
+  read  [disk 0, offset 2]   
+LOGICAL READ from addr:9 size:4096
+  read  [disk 0, offset 3]   
+LOGICAL READ from addr:8 size:4096
+  read  [disk 2, offset 2]  
+
+--> disk3 ist parity disk, deshalb keine Anzeige
+
+
+
+-----------------------------RAID5
+LS: immer von rechts beginnend nach links
+
+
+LA: zickzack, von rechts beginnend, dann von links, dann wieder rechts etc.
+
+
+
+
+
+
+
+2)
+LOGICAL READ from addr:8 size:4096
+  read  [disk 0, offset 2]   
+LOGICAL READ from addr:4 size:4096
+  read  [disk 0, offset 1]   
+LOGICAL READ from addr:5 size:4096
+  read  [disk 1, offset 1]   
+LOGICAL READ from addr:7 size:4096
+  read  [disk 3, offset 1]   
+LOGICAL READ from addr:4 size:4096
+  read  [disk 0, offset 1]   
+LOGICAL READ from addr:9 size:4096
+  read  [disk 1, offset 2]   
+LOGICAL READ from addr:2 size:4096
+  read  [disk 2, offset 0]   
+LOGICAL READ from addr:6 size:4096
+  read  [disk 2, offset 1]   
+LOGICAL READ from addr:9 size:4096
+  read  [disk 1, offset 2]   
+LOGICAL READ from addr:8 size:4096
+  read  [disk 0, offset 2]   
+------------------------------------- -C 8192
+LOGICAL READ from addr:8 size:4096
+  read  [disk 0, offset 2]   
+LOGICAL READ from addr:4 size:4096
+  read  [disk 2, offset 0]  
+LOGICAL READ from addr:5 size:4096
+  read  [disk 2, offset 1]   
+LOGICAL READ from addr:7 size:4096
+  read  [disk 3, offset 1]   
+LOGICAL READ from addr:4 size:4096
+  read  [disk 2, offset 0]   
+LOGICAL READ from addr:9 size:4096
+  read  [disk 0, offset 3]   
+LOGICAL READ from addr:2 size:4096
+  read  [disk 1, offset 0]   
+LOGICAL READ from addr:6 size:4096
+  read  [disk 3, offset 0]   
+LOGICAL READ from addr:9 size:4096
+  read  [disk 0, offset 3]   
+LOGICAL READ from addr:8 size:4096
+  read  [disk 0, offset 2] 
+
+--> chunksize -> menge der blöcke in einem chunk (2)
+--> vA / faktor = ergebnis
+--> ergebnis % number_disks
+
+
+_________________________________________
+--> vA % number_disks = disk
+--> vA / number_disks = offset
+
+
+
+
+
+
+
+3)
+python2 raid.py -L 5 -C 8192 -R 20 -r
+
+LOGICAL OPERATION is ?
+  read  [disk 0, offset 4]   
+LOGICAL OPERATION is ?
+  read  [disk 0, offset 2]   
+LOGICAL OPERATION is ?
+  read  [disk 1, offset 2]   
+LOGICAL OPERATION is ?
+  read  [disk 3, offset 5]   
+LOGICAL OPERATION is ?
+  read  [disk 0, offset 3]   
+LOGICAL OPERATION is ?
+  read  [disk 1, offset 6]   
+LOGICAL OPERATION is ?
+  read  [disk 2, offset 1]   
+LOGICAL OPERATION is ?
+  read  [disk 2, offset 4]   
+LOGICAL OPERATION is ?
+  read  [disk 1, offset 6]   
+LOGICAL OPERATION is ?
+  read  [disk 0, offset 4] 
+
+--> oneNote
+
+
+
+
+4)
+VM
+
+
+
+5)
+--> alle gut bis Level 4, weil eine Festplatte weniger und somit keine Parallelität
+
+
+
+6)
+mehr Festplatten -> auf mehr Daten parallel zugreifebar --> man wird schneller
+Level-0: schneller
+Level-1: schneller
+Level-4:schneller
+Level-5: schneller
+aber nicht linear, sondern logarithmisch schneller
+--> performance von raid 4 kann sich mit mehr festplatten an die anderen raids anpassen
+
+
+
+7)
+the performance is in RAID 4 horrible because its parallelization doesn't work quite well here
+*pup* -> small-write problem
+random small writes are totally horrible because its total bandwith is never user
+
+
+
+8)
+Level-0: wirte and read have the same speed
+Level-1: writing is a little bit slower
+Level-4: same speed
+Level-5: same speed
+
+-- the fup?! --
